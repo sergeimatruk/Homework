@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import client_kb
+from database.bot_db import sql_command_insert
 
 
 class FSMAdmin(StatesGroup):
@@ -10,7 +11,7 @@ class FSMAdmin(StatesGroup):
     age = State()
     id = State()
     direction = State()
-    group = State()
+    group_number = State()
     submit = State()
 
 
@@ -62,8 +63,8 @@ async def load_direction(message: types.Message, state: FSMContext):
 
 async def load_group(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['group'] = message.text
-    await FSMAdmin.next()
+        data['group_number'] = message.text
+    await sql_command_insert(state)
     await message.answer("Зарегистрировать?")
 
 
@@ -95,5 +96,5 @@ def register_handlers_fsmAdminMentor(dp: Dispatcher):
     dp.register_message_handler(load_age, state=FSMAdmin.age)
     dp.register_message_handler(load_id, state=FSMAdmin.id)
     dp.register_message_handler(load_direction, state=FSMAdmin.direction)
-    dp.register_message_handler(load_group, state=FSMAdmin.group)
+    dp.register_message_handler(load_group, state=FSMAdmin.group_number)
     dp.register_message_handler(submit, state=FSMAdmin.submit)
