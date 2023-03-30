@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import bot, Dispatcher
 from database.bot_db import sql_command_random
+from parser.films import parser
 
 # @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
@@ -42,6 +43,25 @@ async def get_random_user(message: types.Message):
         caption=f"{random_user[0]} {random_user[1]} {random_user[2]} {random_user[3]}\n"
                 f"@{random_user[4]}"
     )
+
+async def get_films(message: types.Message):
+    films = parser()
+    count = int(message.text.split()[1])
+    for film in films:
+        count -= 1
+        if count == 0:
+            break
+        await message.answer(
+            # f"{film['link']}\n\n"
+            f"<b><a href='{film['link']}'>{film['title']}</a></b>\n"
+            f"#Y{film['year']}\n"
+            f"#{film['genre']}\n"
+            f"#{film['country']}\n",
+            reply_markup=InlineKeyboardMarkup().add(
+                InlineKeyboardButton("СМОТРЕТЬ", url=film['link'])
+            ),
+            parse_mode=ParseMode.HTML
+        )
 
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'])
