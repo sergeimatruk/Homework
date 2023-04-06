@@ -1,6 +1,6 @@
 from aiogram.utils import executor
 from config import dp, bot, ADMINS
-from handlers import client, callback, extra, admin, fsmAdminMentor, schedule
+from handlers import client, callback, extra, admin, fsmAdminMentor, schedule, qr
 import logging
 from database.bot_db import sql_create
 
@@ -14,6 +14,7 @@ callback.register_handlers_callback(dp)
 fsmAdminMentor.register_handlers_fsmAdminMentor(dp)
 extra.register_handlers_extra(dp)
 admin.register_handlers_admin(dp)
+qr.register_handlers_qr(dp)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
